@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body { font-family: system-ui, sans-serif; width: 360px; margin: 10px; }
+      textarea { width: 100%; height: 220px; }
+      button { padding: 6px 10px; }
+      .error { color: #b00; margin-top: 6px; }
+    </style>
+  </head>
+  <body>
+    <h3>Privacy Policy Reader</h3>
+    <button id="summarize">Extract & Summarize</button>
+    <p><small>Set API key in <a href="#" id="openOptions">Options</a>.</small></p>
+    <textarea id="output" placeholder="Summary appears here..." readonly></textarea>
+    <div id="error" class="error"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>
