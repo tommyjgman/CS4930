@@ -12,11 +12,22 @@
   </header>
 
   <section>
-    <label for="policyText">Paste privacy policy text (or teammate module will fill this):</label>
+    <label for="policyText">Paste privacy policy text or extract from active page:</label>
     <textarea id="policyText" placeholder="Paste policy text here..."></textarea>
 
     <div class="row">
       <button id="summarizeBtn">Summarize</button>
+      <button id="scrape">Web Scrape</button>
+    </div>
+    
+    <div class="row">
+      <select id="textSource">
+        <option value="manual">Manual input</option>
+        <option value="extracted">Extract from Active Tab</option>
+      </select>
+    </div>
+
+    <div class="row">
       <select id="style">
         <option value="">Standard</option>
         <option value="risk">Emphasize risks & data sale/share</option>

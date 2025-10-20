@@ -34,12 +34,21 @@ function buildCustomPrompt(style) {
 }
 
 async function summarize() {
-  const raw = textEl.value || "";
-  const customPrompt = buildCustomPrompt(styleSel.value);
+  const source = document.getElementById("textSource").value;
+  let raw = "";
 
+  if (source === "manual") {
+    raw = textEl.value || "";
+  } 
+  
+  else if (source === "extracted") {
+    raw = await extractText();
+  }
+
+
+  const customPrompt = buildCustomPrompt(styleSel.value);
   resultCard.classList.add("hidden");
   summaryEl.textContent = "";
-
   setStatus("Summarizing...", true, false);
   summarizeBtn.disabled = true;
 
@@ -62,6 +71,16 @@ async function summarize() {
     // Clear "Done." after a moment
     setTimeout(() => setStatus(""), 1500);
   }
+}
+
+// Function to extract text from the current page if desired
+async function extractText() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const [{ result }] = await chrome.scripting.extractScript({
+    target: { tabId: tab.id },
+    func: () => document.body.innerText
+  });
+  return result;  
 }
 
 summarizeBtn.addEventListener("click", summarize);
