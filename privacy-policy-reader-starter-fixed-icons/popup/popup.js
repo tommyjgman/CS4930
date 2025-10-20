@@ -12,3 +12,19 @@ document.getElementById("summarize").addEventListener("click", () => {
 document.getElementById("openOptions").addEventListener("click", () => {
   chrome.runtime.openOptionsPage();
 });
+
+document.getElementById("scrape").addEventListener("click", async () => {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.scripting.executeScript({
+    target : {tabId : tab.id},
+    func : extractPolicy,
+  },
+  async (results) => {
+    const text = results[0].result;
+    document.getElementById("output").value = "Web Scraping Results: \n" + text.slice(0, 1000) + "...";
+  });
+});
+
+function extractPolicy() {
+  return document.body.innerText;
+}
