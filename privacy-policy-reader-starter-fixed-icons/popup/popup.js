@@ -12,3 +12,4 @@ document.getElementById("summarize").addEventListener("click", () => {
 document.getElementById("openOptions").addEventListener("click", () => {
   chrome.runtime.openOptionsPage();
 });
+

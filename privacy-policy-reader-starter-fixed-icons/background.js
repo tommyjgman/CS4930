@@ -37,3 +37,40 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log("Message received in background:", message);
+
+  if (message.action === "privacyPolicyDetected") {
+    console.log("Sending notification");
+    chrome.notifications.create({
+      type: "basic",
+      iconUrl: "icons/48.png",
+      title: "Privacy Policy Detected",
+      message: "Would you like to summarize this policy?",
+      buttons: [{ title: "Open Extension" }],
+      priority: 2
+    });
+  }
+});
+
+chrome.notifications.onButtonClicked.addListener((notificationId, buttonId) => {
+  if (buttonId === 0) {
+    console.log("Notification button clicked, opening window");
+
+    setTimeout(() => {
+      chrome.windows.create({
+        url: chrome.runtime.getURL("popup.html"),
+        type: "popup",
+        width: 400,
+        height: 600
+      }, (win) => {
+        if (chrome.runtime.lastError) {
+          console.error("Error creating popup:", chrome.runtime.lastError);
+        } else {
+          console.log("Popup window created:", win);
+        }
+      });
+    }, 100);
+  }
+});

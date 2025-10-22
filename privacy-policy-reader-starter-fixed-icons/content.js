@@ -1,4 +1,6 @@
 // content.js
+console.log("Content script loaded:", window.location.href);
+
 function getVisibleText() {
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   const parts = [];
@@ -29,4 +31,46 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     const policy = findPolicyCandidate() || getVisibleText();
     sendResponse({ text: policy.slice(0, 200000) });
   }
+}
+);
+
+function isPrivacyPolicyPage() {
+  console.log("Running privacy policy detection");
+  const title = document.title.toLowerCase();
+  const text = document.body.innerText.toLowerCase();
+
+  const keywords = [
+    "privacy policy",
+    "your privacy",
+    "data protection",
+    "information we collect",
+    "data privacy"
+  ];
+
+  const detected = keywords.some(k =>
+    title.includes(k) || text.includes(k)
+  );
+
+  console.log("Detection result", detected);
+  return detected;
+}
+
+window.addEventListener("load", () => {
+  console.log ("Page loaded, checking");
+  setTimeout(() => {
+    if (isPrivacyPolicyPage()) {
+      console.log ("Privacy policy detected!");
+      chrome.runtime.sendMessage({ action: "privacyPolicyDetected" });
+    } else {
+      console.log("Not a privacy policy page");
+    }
+  }, 2000);
 });
+
+/*document.addEventListener("DOMContentLoaded", () => {
+  console.log("Calling isPrivacyPolicyPage");
+  if (isPrivacyPolicyPage()){
+    HTMLFormControlsCollection.log("Privacy policy detected on page");
+    chrome.runtime.sendMessage({ action: "privacyPolicyDetected" });
+  }
+});*/
