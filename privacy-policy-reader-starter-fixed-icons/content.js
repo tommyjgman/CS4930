@@ -40,6 +40,7 @@ function isPrivacyPolicyPage() {
   const text = document.body.innerText.toLowerCase();
 
   const keywords = [
+    "privacy",
     "privacy policy",
     "your privacy",
     "data protection",
@@ -48,29 +49,28 @@ function isPrivacyPolicyPage() {
   ];
 
   const detected = keywords.some(k =>
-    title.includes(k) || text.includes(k)
+    title.includes(k) && text.includes(k)
   );
 
   console.log("Detection result", detected);
   return detected;
 }
 
+let privacyPolicyDetected = false;
+
+function detectPrivacyPolicy(){
+  if (privacyPolicyDetected) return;
+
+  if (isPrivacyPolicyPage()){
+    privacyPolicyDetected = true;
+    console.log("Privacy policy detected");
+    chrome.runtime.sendMessage({action: "privacyPolicyDetected"});
+  }
+}
+
 window.addEventListener("load", () => {
-  console.log ("Page loaded, checking");
-  setTimeout(() => {
-    if (isPrivacyPolicyPage()) {
-      console.log ("Privacy policy detected!");
-      chrome.runtime.sendMessage({ action: "privacyPolicyDetected" });
-    } else {
-      console.log("Not a privacy policy page");
-    }
-  }, 2000);
+  setTimeout(detectPrivacyPolicy, 2000);
 });
 
-/*document.addEventListener("DOMContentLoaded", () => {
-  console.log("Calling isPrivacyPolicyPage");
-  if (isPrivacyPolicyPage()){
-    HTMLFormControlsCollection.log("Privacy policy detected on page");
-    chrome.runtime.sendMessage({ action: "privacyPolicyDetected" });
-  }
-});*/
+const observer = new MutationObserver(detectPrivacyPolicy);
+observer.observe(document.body, {childList: true, subtree: true});

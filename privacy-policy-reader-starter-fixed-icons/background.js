@@ -47,30 +47,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       type: "basic",
       iconUrl: "icons/48.png",
       title: "Privacy Policy Detected",
-      message: "Would you like to summarize this policy?",
-      buttons: [{ title: "Open Extension" }],
+      message: "Click the extension icon in the toolbar to summarize this privacy policy.",
       priority: 2
     });
   }
 });
 
-chrome.notifications.onButtonClicked.addListener((notificationId, buttonId) => {
-  if (buttonId === 0) {
-    console.log("Notification button clicked, opening window");
-
-    setTimeout(() => {
-      chrome.windows.create({
-        url: chrome.runtime.getURL("popup.html"),
-        type: "popup",
-        width: 400,
-        height: 600
-      }, (win) => {
-        if (chrome.runtime.lastError) {
-          console.error("Error creating popup:", chrome.runtime.lastError);
-        } else {
-          console.log("Popup window created:", win);
-        }
-      });
-    }, 100);
-  }
+chrome.notifications.onClicked.addListener((notifId) => {
+  chrome.notifications.clear(notifId);
+  alert("Click the extension icon in the toolbar to summarize the privacy policy.");
 });
