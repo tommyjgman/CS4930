@@ -1,6 +1,4 @@
 // content.js
-console.log("Content script loaded:", window.location.href);
-
 function getVisibleText() {
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   const parts = [];
@@ -31,8 +29,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     const policy = findPolicyCandidate() || getVisibleText();
     sendResponse({ text: policy.slice(0, 200000) });
   }
-}
-);
+});
 
 function isPrivacyPolicyPage() {
   console.log("Running privacy policy detection");
