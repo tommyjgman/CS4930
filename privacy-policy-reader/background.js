@@ -78,7 +78,6 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     sendResponse({ ok: true });
   }
 });
-<<<<<<< HEAD
 
 //Notification sent when privacy policy detected
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -100,5 +99,3 @@ chrome.notifications.onClicked.addListener((notifId) => {
   chrome.notifications.clear(notifId);
   alert("Click the extension icon in the toolbar to summarize the privacy policy.");
 });
-=======
->>>>>>> main
