@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to extract text from the current page if desired
   async function extractText() {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    const [{ result }] = await chrome.scripting.extractScript({
+    const [{ result }] = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: () => {
        // Collect relevant privacy policy looking headings
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  copyBtn.addEventListener("click", async () => {
+  scrapeBtn.addEventListener("click", async () => {
     setStatus("Scraping active tab...", true);
     try {
       const text = await extractText();
