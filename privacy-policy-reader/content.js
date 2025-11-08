@@ -30,3 +30,44 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     sendResponse({ text: policy.slice(0, 200000) });
   }
 });
+
+function isPrivacyPolicyPage() {
+  console.log("Running privacy policy detection");
+  const title = document.title.toLowerCase();
+  const text = document.body.innerText.toLowerCase();
+
+  const keywords = [
+    "privacy",
+    "privacy policy",
+    "your privacy",
+    "data protection",
+    "information we collect",
+    "data privacy"
+  ];
+
+  const detected = keywords.some(k =>
+    title.includes(k) && text.includes(k)
+  );
+
+  console.log("Detection result", detected);
+  return detected;
+}
+
+let privacyPolicyDetected = false;
+
+function detectPrivacyPolicy(){
+  if (privacyPolicyDetected) return;
+
+  if (isPrivacyPolicyPage()){
+    privacyPolicyDetected = true;
+    console.log("Privacy policy detected");
+    chrome.runtime.sendMessage({action: "privacyPolicyDetected"});
+  }
+}
+
+window.addEventListener("load", () => {
+  setTimeout(detectPrivacyPolicy, 2000);
+});
+
+const observer = new MutationObserver(detectPrivacyPolicy);
+observer.observe(document.body, {childList: true, subtree: true});
