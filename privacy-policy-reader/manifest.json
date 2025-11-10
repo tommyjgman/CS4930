@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Privacy Policy Reader",
-  "version": "0.3.0",
-  "description": "Summarize privacy policies in clear language.",
+  "version": "1.0.0",
+  "description": "Summarize privacy policies in clear, simplified, language.",
   "background": { "service_worker": "background.js" },
   "action": {
     "default_popup": "popup/popup.html",
