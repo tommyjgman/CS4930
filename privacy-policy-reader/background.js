@@ -80,18 +80,26 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 });
 
 //Notification sent when privacy policy detected
+const notifiedTabs = new Set();
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("Message received in background:", message);
 
   if (message.action === "privacyPolicyDetected") {
-    console.log("Sending notification");
-    chrome.notifications.create({
-      type: "basic",
-      iconUrl: "icons/48.png",
-      title: "Privacy Policy Detected",
-      message: "Click the extension icon in the toolbar to summarize this privacy policy.",
-      priority: 2
-    });
+    const tabId = sender.tab?.id;
+
+    if(tabId && !notifiedTabs.has(tabId)){
+      notifiedTabs.add(tabId);
+      console.log("Sending notification");
+    
+      chrome.notifications.create({
+        type: "basic",
+        iconUrl: "icons/48.png",
+        title: "Privacy Policy Detected",
+        message: "Click the extension icon in the toolbar to summarize this privacy policy.",
+        priority: 2
+      });
+    }
   }
 });
 
