@@ -1,44 +1,71 @@
 <!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>Privacy Policy Reader</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="popup.css" />
-</head>
-<body>
-  <header>
-    <h1>Privacy Policy Reader</h1>
-  </header>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <title>Privacy Policy Reader</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
 
-  <section>
-    <label for="policyText">Paste privacy policy text (or teammate module will fill this):</label>
-    <textarea id="policyText" placeholder="Paste policy text here..."></textarea>
+  <body>
+    <div class="ppr-wrap">
+      <header class="ppr-header">
+        <div class="ppr-title">
+          <span class="ppr-logo" aria-hidden="true">🛡️</span>
+          <h2>Privacy Policy Reader</h2>
+        </div>
+        <button id="themeToggle" class="ppr-toggle" aria-label="Switch theme">🌙 Dark</button>
+      </header>
 
-    <div class="row">
-      <button id="summarizeBtn">Summarize</button>
-      <select id="style">
-        <option value="">Standard</option>
-        <option value="risk">Emphasize risks & data sale/share</option>
-        <option value="child">Plain language for teens</option>
-        <option value="exec">Executive brief (100–140 words)</option>
-      </select>
-    </div>
+      <section class="ppr-card">
+        <label for="ppr-input" class="ppr-label">Paste privacy policy text:</label>
+        <textarea id="ppr-input" class="ppr-textarea" placeholder="Paste policy text here..." rows="6"></textarea>
 
-    <div id="status" class="status"></div>
+        <div class="ppr-actions">
+          <button id="summarizeBtn" class="ppr-button primary">Summarize</button>
+          <button id="clearBtn" class="ppr-button subtle">Clear</button>
+          <button id="webscrapeBtn" class="ppr-button">Webscrape</button>
 
-    <div id="resultCard" class="card hidden">
-      <div class="card-actions">
-        <button id="copyBtn" title="Copy summary">Copy</button>
+          <select id="styleSelect" class="ppr-select" aria-label="Summary style">
+            <option value="Standard" selected>Standard</option>
+            <option value="Risk Focused">Risk Focused</option>
+            <option value="Simplified">Simplified</option>
+            <option value="Executive">Executive</option>
+          </select>
       </div>
-      <pre id="summary"></pre>
+
+        <p class="ppr-note">
+          Note: AI summaries may omit legal nuance. Verify with the official policy. Only the text you paste is sent to the AI. We do not store your input or summaries.
+        </p>
+      </section>
+
+      <section class="ppr-output" aria-live="polite">
+        <div class="ppr-output-header">
+          <h3>Summary</h3>
+          <div class="ppr-output-actions">
+            <button id="copyBtn" class="ppr-button subtle" disabled>Copy</button>
+            <details class="ppr-details">
+              <summary>Export</summary>
+              <div class="ppr-export">
+                <button id="exportTxt" class="ppr-button subtle" disabled>.txt</button>
+                <button id="exportHtml" class="ppr-button subtle" disabled>.html</button>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div id="errorBox" class="ppr-error" role="alert" hidden></div>
+
+        <div id="loadingBox" class="ppr-loading" hidden>
+          <span class="ppr-spinner" aria-hidden="true"></span>
+          <span>Generating summary…</span>
+        </div>
+
+        <article id="summaryBox" class="ppr-summary" hidden></article>
+        <div id="placeholderBox" class="ppr-placeholder">Your summary will appear here.</div>
+      </section>
     </div>
 
-    <p class="footnote">
-      Note: AI summaries may omit legal nuance. Verify with the official policy.
-    </p>
-  </section>
-
-  <script src="popup.js"></script>
-</body>
+    <script src="popup.js"></script>
+  </body>
 </html>
