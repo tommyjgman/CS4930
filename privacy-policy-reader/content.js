@@ -37,7 +37,6 @@ function isPrivacyPolicyPage() {
   const text = document.body.innerText.toLowerCase();
 
   const keywords = [
-    "privacy",
     "privacy policy",
     "your privacy",
     "data protection",
