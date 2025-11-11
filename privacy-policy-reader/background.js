@@ -168,6 +168,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         priority: 2
       });
     }
+  }
+});
   const input = (rawText || "").slice(0, MAX_INPUT_CHARS);
   if (!input.trim()) throw new Error("No input text provided.");
 
