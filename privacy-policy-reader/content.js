@@ -1,4 +1,6 @@
 // content.js
+let privacyPolicyDetected = false;
+
 function getVisibleText() {
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   const parts = [];
@@ -37,7 +39,6 @@ function isPrivacyPolicyPage() {
   const text = document.body.innerText.toLowerCase();
 
   const keywords = [
-    "privacy",
     "privacy policy",
     "your privacy",
     "data protection",
@@ -52,8 +53,6 @@ function isPrivacyPolicyPage() {
   console.log("Detection result", detected);
   return detected;
 }
-
-let privacyPolicyDetected = false;
 
 function detectPrivacyPolicy(){
   if (privacyPolicyDetected) return;
