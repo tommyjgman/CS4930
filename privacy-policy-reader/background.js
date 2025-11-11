@@ -170,11 +170,37 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       }
 
       // Optional: teammate extractor can push text into popup
-      if (msg?.type === "EXTRACTION_RESULT") {
-        chrome.runtime.sendMessage({ type: "PIPE_TEXT_TO_POPUP", text: msg.text || "" });
-        sendResponse({ ok: true });
-        return;
+      if (msg?.type === "WEBSCRAPE_ACTIVE_TAB") {
+        try {
+          const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+          const [{ result }] = await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: () => {
+              const headings = Array.from(document.querySelectorAll("h1,h2,h3,h4"))
+                .filter(h => /privacy|policy/i.test(h.textContent));
+              if (headings.length) {
+                return headings.map(h => {
+                  let sectionText = h.textContent.trim();
+                  let el = h.nextElementSibling;
+                  while (el && !/^H[1-6]$/.test(el.tagName)) {
+                    sectionText += "\n" + el.innerText.trim();
+                    el = el.nextElementSibling;
+                  }
+                  return sectionText;
+                }).join("\n\n");
+              }
+              return document.body.innerText;
+            }
+          });
+
+          // Send the extracted text back to the popup
+          sendResponse({ ok: true, scrapedText: result });
+        } catch (err) {
+          sendResponse({ ok: false, error: err.message || "Scrape failed" });
+        }
+        return true; // keep port open for async
       }
+
 
       // Notification from content.js detection
       if (msg?.action === "privacyPolicyDetected") {

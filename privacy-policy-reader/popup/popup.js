@@ -133,19 +133,23 @@ async function handleSummarize() {
 }
 
 // --- Scrape handler ---
-scrapeBtn.addEventListener("click", async () => {
-  setError("");
-  setLoading(true);
-  try {
-    const text = await extractText();
-    ta.value = text;
-    setLoading(false);
-  } catch (err) {
-    console.error(err);
-    setError("Scrape failed");
-    setLoading(false);
+document.addEventListener("DOMContentLoaded", () => {
+  const webscrapeBtn = document.getElementById("webscrapeBtn");
+  if (webscrapeBtn) {
+    webscrapeBtn.addEventListener("click", () => {
+      chrome.runtime.sendMessage({ type: "WEBSCRAPE_ACTIVE_TAB" }, (res) => {
+        if (res?.error) {
+          setError(res.error);
+        } else if (res?.scrapedText) {
+          ta.value = res.scrapedText;
+          setError("");
+          setSummary("");
+        }
+      });
+    });
   }
 });
+
 
 // --- Other UI listeners ---
 summarizeBtn.addEventListener("click", handleSummarize);
