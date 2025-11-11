@@ -147,6 +147,29 @@ async function summarizeText(rawText, customPrompt) {
   const { apiKey, model } = await getSettings();
   if (!apiKey) throw new Error("Missing API key. Set it in Options.");
 
+//Notification sent when privacy policy detected
+const notifiedTabs = new Set();
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log("Message received in background:", message);
+
+  if (message.action === "privacyPolicyDetected") {
+    const tabId = sender.tab?.id;
+
+    if(tabId && !notifiedTabs.has(tabId)){
+      notifiedTabs.add(tabId);
+      console.log("Sending notification");
+    
+      chrome.notifications.create({
+        type: "basic",
+        iconUrl: "icons/48.png",
+        title: "Privacy Policy Detected",
+        message: "Click the extension icon in the toolbar to summarize this privacy policy.",
+        priority: 2
+      });
+    }
+  }
+});
   const input = (rawText || "").slice(0, MAX_INPUT_CHARS);
   if (!input.trim()) throw new Error("No input text provided.");
 
