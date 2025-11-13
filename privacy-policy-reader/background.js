@@ -159,7 +159,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if(tabId && !notifiedTabs.has(tabId)){
       notifiedTabs.add(tabId);
       console.log("Sending notification");
-    
+
       chrome.notifications.create({
         type: "basic",
         iconUrl: "icons/48.png",

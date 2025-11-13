@@ -10,135 +10,167 @@
 
 ## Project Overview
 
-Modern privacy policies are lengthy, full of legal and technical jargon, and often ignored by users. The **Privacy Policy Reader** is a Chrome browser extension designed to automatically **summarize and simplify** these policies using OpenAI’s language model (GPT-4o-Mini).  
-The extension enables users to understand what data is collected, how it is used, and whether it is shared — empowering them to make informed decisions about their privacy.
+Modern privacy policies are lengthy, dense, and filled with legal and technical jargon that users rarely read.  
+The Privacy Policy Reader is a Chrome browser extension that automatically extracts, summarizes, and simplifies privacy policies using OpenAI’s ChatGPT API.
+
+The goal is to help users quickly understand:
+
+- What data is collected  
+- How their data is used  
+- Whether their data is shared  
+- How long the site retains data  
+- What rights they have  
+
+This tool enables users to make informed decisions about their personal privacy with minimal effort.
 
 ---
 
 ## Features
 
-- **AI Summarization** — Uses OpenAI’s GPT-4o-Mini API to generate a concise 150-250 word summary of any pasted privacy policy.  
-- **Text Input Interface** — Users can paste policy text directly into the popup interface.  
-- **Readable Bullet-Point Output** — Summaries highlight key categories:
+- **Automatic Summarization**  
+  Gives the user the option between gpt-4o-mini, gpt-4o, and gpt-4.1-mini to generate a 150–250 word summary of any privacy policy.
+
+- **Automated Text Extraction**  
+  `content.js` detects and extracts privacy policy text automatically from webpages.
+
+- **Readable Bullet-Point Output**  
+  Summaries are grouped into intuitive categories:
   - Data collected  
-  - How data is used  
+  - Data usage  
   - Third-party sharing  
-  - Retention policies  
+  - Retention practices  
   - User rights and opt-out options  
   - Contact information  
-- **Clean UI** — Simple, mobile-responsive popup design with options for summary tone (Standard, Risk-focused, Child-friendly, Executive).  
-- **Secure Key Storage** — OpenAI API key is entered by the user and securely stored locally using Chrome’s encrypted `storage.sync` API.  
+
+- **Multiple Summary Styles**  
+  - Standard  
+  - Risk-Focused  
+  - Child-Friendly  
+  - Executive  
+
+- **Clean, Updated UI**  
+  Modern and responsive popup with improved layout and styling.
+
+- **Secure Storage of API Keys**  
+  API key saved using **both**:
+  - `chrome.storage.sync` (encrypted sync across devices)  
+  - `chrome.storage.local` (fallback for privacy-focused setups)
+
+- **Background Notifications**  
+  Extension automatically notifies the user when a privacy policy is detected.
 
 ---
 
 ## Architecture
 
 | Component | Description |
-|------------|-------------|
-| **popup.html / popup.js / popup.css** | User interface for pasting text, selecting summary style, and displaying the output summary. |
-| **background.js** | Main service worker that retrieves the stored API key, communicates with OpenAI API, and returns summaries to the popup. |
-| **options.html / options.js** | Page where the user securely enters their OpenAI API key and selects the preferred model (default: `gpt-4o-mini`). |
-| **manifest.json** | Defines Chrome Extension metadata and permissions (MV3). |
-| **icons/** | Set of extension icons (16×, 48×, 128×). |
+|----------|-------------|
+| **content.js** | Locates and extracts privacy policy text from websites. |
+| **popup.html / popup.js / popup.css** | User interface where text is summarized and displayed. |
+| **background.js** | Handles notifications, API requests, and secure key retrieval from storage. |
+| **options.html / options.js** | Allows the user to securely enter and save their OpenAI API key and model selection. |
+| **manifest.json** | Chrome MV3 extension configuration and permissions. |
+| **icons/** | Full icon set (16×, 48×, 128×). |
 
 ---
 
 ## How It Works
 
-1. **User Input**  
-   - The user pastes privacy policy text into the popup interface.
+### 1. **Extraction**
+`content.js` scans pages for large text blocks commonly found in privacy policies and isolates them.
 
-2. **Message Routing**  
-   - The popup sends the text to `background.js` via a Chrome message.
+### 2. **Notification**
+When a potential privacy policy is detected, `background.js` sends a Chrome notification encouraging the user to summarize it.
 
-3. **AI Summarization**  
-   - `background.js` retrieves the user’s API key from `chrome.storage.sync` and calls OpenAI’s GPT-4o-Mini model to summarize the text.
+### 3. **Summarization**
+The popup sends the extracted (or manually pasted) text to the background script, which calls OpenAI using the saved API key.
 
-4. **Output Display**  
-   - The summary is returned to the popup and rendered in a clear, structured format with bullet points.
+### 4. **Display**
+The model’s structured summary is rendered in the popup with a clean, bullet-point style.
 
 ---
 
 ## Installation & Usage
 
-1. **Load the Extension**
-   - Open `chrome://extensions`
-   - Enable **Developer Mode**
-   - Click **Load Unpacked**
-   - Select the folder containing `manifest.json`
+### **1. Load the Extension**
+- Go to your browser's extensions page, e.g. `chrome://extensions/` or `edge://extensions/`
+- Enable **Developer Mode**
+- Select **Load Unpacked**
+- Choose the folder containing `manifest.json`
 
-2. **Set Your API Key**
-   - Click the extension’s puzzle-piece icon → Manage Extensions → **Options**
-   - Paste your **OpenAI API key** (e.g., `sk-...`)  
-   - Click **Save**
+### **2. Enter Your API Key**
+- Open the extension’s **Options Page**
+- Enter your OpenAI API key
+- Choose the preferred model (default: `gpt-4o-mini`)
+- Save settings (securely stored using encrypted browser storage)
 
-3. **Use the Extension**
-   - Open the popup
-   - Paste a privacy policy or section of one
-   - Select summary style (Standard, Risk, Child, Executive)
-   - Click **Summarize**
-   - Copy the generated summary if desired
+### **3. Use the Extension**
+- Navigate to any website  
+- Receive a notification when a privacy policy is detected  
+- Open the popup  
+- Summarize automatically extracted text or paste your own  
+- Select your preferred summary style  
+- Copy and use the generated summary  
 
 ---
 
 ## Security Note
 
-Your **OpenAI API key** is:
-- **Entered manually** in the Options page (never hard-coded or included in source code).  
-- **Stored locally** using Chrome’s built-in `chrome.storage.sync` API, which encrypts data tied to your browser profile.  
-- **Accessible only** to the extension’s background and popup scripts — not to web pages or other extensions.  
-- **Never transmitted or committed** to GitHub or external servers except directly to OpenAI’s API over HTTPS.
+Your API key is:
 
-**Important:**  
-- Never commit your key or share screenshots containing it.  
-- If your key is ever exposed, revoke it in the [OpenAI Dashboard](https://platform.openai.com/account/api-keys).  
-- Teammates should enter the key individually for testing.  
-- The repo should remain **private** to avoid scraping by bots.
+- **Manually entered** by the user  
+- **Stored securely** using both `storage.sync` and `storage.local`  
+- **Encrypted by browser’s storage layer**  
+- **Never hard-coded**, logged, or transmitted except directly to OpenAI over HTTPS  
+- **Never sent to websites or other extensions**
+
+If your key becomes exposed, revoke it in the OpenAI Dashboard.
 
 ---
 
 ## Technologies Used
 
-| Category | Tools / Libraries |
-|-----------|-------------------|
-| **Languages** | JavaScript, HTML5, CSS3 |
-| **Frameworks** | Chromium Extension (Manifest V3), OpenAI SDK (Node.js) |
-| **Version Control** | GitHub (private repository) |
-| **Testing** | Manual browser testing on Chrome v116+ |
+| Category | Tools / Libraries                                     |
+|----------|-------------------------------------------------------|
+| **Languages** | JavaScript, HTML5, CSS3                               |
+| **Frameworks** | Chrome Extensions Manifest V3, OpenAI SDK             |
+| **Version Control** | GitHub                                                |
+| **Testing** | Manual testing across different browsers and versions |
 
 ---
 
-## Deliverables (per proposal)
+## Deliverables
 
 | Task | Owner | Status |
 |------|--------|--------|
-| Framework for Browser Extension | Nathan | Complete |
-| Text Extraction Process | Evan | Complete |
-| Text Highlight Function | Evan | Complete |
-| Text Processing API (OpenAI Integration) | Thomas | In Progress |
-| Browser Extension UI | Thomas |  In Progress |
-| Ethical & Legal Considerations | Team | Ongoing |
-| Final Testing | Team | Dec 2025 |
-| Final Presentation | Team | Dec 2025 |
+| Browser Extension Framework | Nathan | **Complete** |
+| Automated Text Extraction | Evan | **Complete** |
+| Text Highlight Function | Evan | **Complete** |
+| OpenAI Integration (API) | Thomas | **Complete** |
+| Browser Extension UI | Thomas | **Complete** |
+| Background Notifications | Nathan | **Complete** |
+| Options Page & Key Storage | Thomas | **Complete** |
+| Ethical & Legal Write-Up | Team | **Complete** |
+| Final Testing | Team | **Complete** |
 
 ---
 
 ## References
 
-- Harkous, H., et al. (2018). *Polisis: Automated analysis and presentation of privacy policies using deep learning.* USENIX Security Symposium.  
-- Kelley, P. G., et al. (2009). *A “Nutrition Label” for Privacy.* Proceedings of SOUPS ’09.  
-- Wagner, I. (2023). *Privacy Policies Across the Ages.* ACM Transactions on Privacy and Security.  
-- Obar, J. A., & Oeldorf-Hirsch, A. (2018). *The Biggest Lie on the Internet.* *Information, Communication & Society.*  
-- McDonald, A. M., et al. (2009). *A Comparative Study of Online Privacy Policies and Formats.* PETS.  
-- Reidenberg, J. R., et al. (2014). *Disagreeable Privacy Policies.* SSRN Electronic Journal.  
+- Harkous, H., et al. (2018). *Polisis: Automated analysis and presentation of privacy policies using deep learning.*  
+- Kelley, P. G., et al. (2009). *A “Nutrition Label” for Privacy.*  
+- Wagner, I. (2023). *Privacy Policies Across the Ages.*  
+- Obar, J. A., & Oeldorf-Hirsch, A. (2018). *The Biggest Lie on the Internet.*  
+- McDonald, A. M., et al. (2009). *A Comparative Study of Online Privacy Policies and Formats.*  
+- Reidenberg, J. R., et al. (2014). *Disagreeable Privacy Policies.*  
 
 ---
 
 ## Disclaimer
 
-This tool provides **AI-generated summaries** of privacy policies.  
-Summaries may omit legal nuances. Users should refer to the **official policy** for complete and authoritative information.
+This extension provides **AI-generated summaries** and may omit essential legal details.  
+Always refer to the **official privacy policy** for authoritative information.
 
 ---
 
-**© 2025 — UCCS CS 4930 Privacy & Censorship Project**
+© 2025 — UCCS CS 4930 Privacy & Censorship Project
