@@ -12,6 +12,7 @@
 
 Modern privacy policies are lengthy, dense, and filled with legal and technical jargon that users rarely read.  
 The Privacy Policy Reader is a Chrome browser extension that automatically extracts, summarizes, and simplifies privacy policies using OpenAI’s ChatGPT API.
+It is designed to work with the Google Chrome browser, but may work with other Chromium based browsers.
 
 The goal is to help users quickly understand:
 
