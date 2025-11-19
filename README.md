@@ -101,7 +101,7 @@ The model’s structured summary is rendered in the popup with a clean, bullet-p
 
 ### **2. Enter Your API Key**
 - Open the extension’s **Options Page**
-  - Enter your OpenAI API key: ![img.png](img.png)
+  - Enter your OpenAI API key: ![img_1.png](img_1.png)
     Note: For security reasons, this OpenAI API key is restricted to a low budget intended only for the peer review and grading of this project.
 - Choose the preferred model (default: `gpt-4o-mini`)
 - Save settings (securely stored using encrypted browser storage)
