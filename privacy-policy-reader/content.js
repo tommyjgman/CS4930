@@ -40,6 +40,7 @@ function isPrivacyPolicyPage() {
 
   const keywords = [
     "privacy policy",
+    "privacy statement",
     "your privacy",
     "data protection",
     "information we collect",
