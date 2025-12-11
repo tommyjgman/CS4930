@@ -157,6 +157,27 @@ If your key becomes exposed, revoke it in the OpenAI Dashboard.
 
 ---
 
+## Supported Websites
+
+The extension has been fully tested and confirmed to work on the following websites, where it automatically detects and extracts privacy policy text:
+
+- **NFL** – https://www.nfl.com/legal/privacy/  
+- **ASUS** – https://www.asus.com/us/terms_of_use_notice_privacy_policy/privacy_policy 
+- **Reddit** – https://www.reddit.com/en-us/policies/privacy-policy
+- **Amazon** – https://www.amazon.com/privacy  
+
+These sites represent a range of different webpage structures and policy formats, enabling thorough validation of the extraction and summarization pipeline.
+
+While these are the primary verified test cases, **the extension also works on many other websites**, depending on how the privacy policy is formatted. Extraction accuracy may vary across sites that:
+
+- Load policy content dynamically  
+- Use highly interactive or script-rendered layouts  
+- Embed text in non-standard HTML components  
+
+We continue to refine scraping logic to improve compatibility across additional sites.
+
+---
+
 ## References
 
 - Harkous, H., et al. (2018). *Polisis: Automated analysis and presentation of privacy policies using deep learning.*  
